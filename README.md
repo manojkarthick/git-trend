@@ -8,7 +8,7 @@ View it on PyPI at: https://pypi.python.org/pypi/git-trend/0.1.2.1
 **Developers** - The tool will print details of the trending developer such as their username, name, their trending repository.
 
 ### Installation
-This tool has been built with python3. Python3.x is a must for to install the utility.
+This tool has been built with python3. You need to install Python3.x for this utility.
 Install this tool from PyPI (The Python Package Index) using pip
 ```shell
 # If Python 3.x is not your primary version of python, then use
