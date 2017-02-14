@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from termcolor import colored
 from bs4 import BeautifulSoup
 from collections import OrderedDict
@@ -65,9 +66,9 @@ def cli():
                 repo_stars = extra_details.find("a",class_="muted-link tooltipped tooltipped-s mr-3").text
                 if p_val != None:
                     if programming_language_span:
-                        trending[title] = "{};{};{}".format(p_val.text.strip(' \t\n\r'),programming_language_span.text.strip(' \t\n\r'),repo_stars.strip(' \t\n\r'))
+                        trending[title] = "{};{};{}".format(p_val.text.encode('utf-8').strip(' \t\n\r'),programming_language_span.text.strip(' \t\n\r'),repo_stars.encode('utf-8').strip(' \t\n\r'))
                     else:
-                        trending[title] = "{};{}".format(p_val.text.strip(' \t\n\r'),repo_stars.strip(' \t\n\r'))
+                        trending[title] = "{};{}".format(p_val.text.encode('utf-8').strip(' \t\n\r'),repo_stars.encode('utf-8').strip(' \t\n\r'))
                 else:
                     trending[title] = ''
 
@@ -81,16 +82,16 @@ def cli():
                 user_id = anchor_tag.get('href')
                 username_val = leaderboard_list_content.find("span",class_="full-name")
                 if username_val != None:
-                    user_name = username_val.text.strip(' \t\n\r')
+                    user_name = username_val.text.encode('utf-8').strip(' \t\n\r')
                 user = '{} {}'.format(user_id,user_name)
                 spandesc_val = item.find("span", class_="repo-snipit-description css-truncate-target")
                 spanrepo_val = item.find("span", class_="repo")
                 if spandesc_val != None:
-                    repo_name = spanrepo_val.text.strip(' \t\n\r')
-                    repo_desc = spandesc_val.text.strip(' \t\n\r')
+                    repo_name = spanrepo_val.text.encode('utf-8').strip(' \t\n\r')
+                    repo_desc = spandesc_val.text.encode('utf-8').strip(' \t\n\r')
                     trending[user] = '{};{}'.format(repo_name,repo_desc)
                 else:
-                    trending[user] = spanrepo_val.text.strip(' \t\n\r')
+                    trending[user] = spanrepo_val.text.encode('utf-8').strip(' \t\n\r')
             return trending
 
 
@@ -163,8 +164,11 @@ def cli():
                     t_period = 1
                 elif args.period == 'weekly':
                     t_period = 2
-                else:
+                elif args.period == 'monthly':
                     t_period = 3
+                else:
+                    print('Invalid period option. Exiting..')
+                    exit()
         else:
             t_period = 1
 
