@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='git-trend',
-    version='0.1.1',
+    version='0.1.2.1',
     author='Manoj Karthick',
     author_email='manojkarthick@ymail.com',
     url='https://github.com/manojkarthick/git-trend',
