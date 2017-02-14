@@ -4,3 +4,4 @@ venv/
 .DS_STORE
 dist/
 build/
+git_trend_venv/

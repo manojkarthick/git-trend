@@ -31,3 +31,5 @@ The utility can fetch trending data for the overall site. In case you are intere
                             developers of a particular language. Optional, by default fetches  overall trending statistics
 --languages                 Get the list of supported languages
 ```
+
+Currently, the supported languages are: Python, Ruby, C, C++, Java, Javascript, go, rust, lua, haskell
