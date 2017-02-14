@@ -19,12 +19,12 @@ $ pip install git-trend
 ### Options
 The utility can fetch trending data for the overall site. In case you are interested in a particular language. Use the language option.
 ```
--h, --help          Print the help text
---repos             Get the details of the trending repositories
---devs              Get the details of the trending developers
---period PERIOD     Period refers to the time period over which the results are available
-                    The options available are daily, weekly, monthy. Defaults to daily.
+-h, --help                  Print the help text
+--repos                     Get the details of the trending repositories
+--devs                      Get the details of the trending developers
+--period PERIOD             Period refers to the time period over which the results are available
+                            The options available are daily, weekly, monthy. Defaults to daily.
 --language LANGUAGE         The utility supports getting trending details of repositories and 
-                    developers of a particular language. Optional, by default fetches  overall trending statistics
---languages         Get the list of supported languages
+                            developers of a particular language. Optional, by default fetches  overall trending statistics
+--languages                 Get the list of supported languages
 ```
