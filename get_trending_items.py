@@ -63,14 +63,17 @@ def cli():
                 p_val = item.find("div", class_="py-1").find('p')
                 extra_details = item.find("div",class_="f6 text-gray mt-2")
                 programming_language_span = extra_details.find("span",class_="mr-3")
-                repo_stars = extra_details.find("a",class_="muted-link tooltipped tooltipped-s mr-3").text
+                repo_stars = extra_details.find("a",class_="muted-link d-inline-block mr-3").text
                 if p_val != None:
                     if programming_language_span:
-                        trending[title] = "{};{};{}".format(p_val.text.strip(' \t\n\r'),programming_language_span.text.strip(' \t\n\r'),repo_stars.strip(' \t\n\r'))
+                        if not p_val.text:
+                            trending[title] = "{};{};{}".format('< No Description >',repo_stars.strip(' \t\n\r'), programming_language_span.text.strip(' \t\n\r'))
+                        else:
+                            trending[title] = "{};{};{}".format(p_val.text.strip(' \t\n\r'),repo_stars.strip(' \t\n\r'),programming_language_span.text.strip(' \t\n\r'))
                     else:
                         trending[title] = "{};{}".format(p_val.text.strip(' \t\n\r'),repo_stars.strip(' \t\n\r'))
                 else:
-                    trending[title] = ''
+                    trending[title] = "{};{}".format('< No Description >',repo_stars.strip(' \t\n\r'))
 
             return trending
 
@@ -118,14 +121,13 @@ def cli():
         if args.repos:
             for key,value in trending.items():
                 value_items = value.split(';')
+                print(value_items)
                 description = value_items[0]
-                if len(value_items) == 2:
-                    stars = value_items[1]
-                    #url_shorten.url_shortener("https://github.com"+key)
+                stars = value_items[1]
+                if len(value_items) == 2:                    
                     print("{} [★ {}]:  {}".format(colored(key,key_color),colored(stars.replace(',',''),stars_color),colored(description,desc_color)))
                 else:
-                    stars = value_items[2]
-                    prog_language = value_items[1]
+                    prog_language = value_items[2]
                     print("{} [{},★ {}]:  {}".format(colored(key,key_color),colored(prog_language,language_color),colored(stars.replace(',',''),stars_color),colored(description,desc_color)))
 
         if args.devs:
