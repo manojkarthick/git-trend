@@ -80,10 +80,10 @@ def cli():
     def get_dev_values(list_items):
             trending = OrderedDict()
             for item in list_items:
-                leaderboard_list_content = item.find("div",class_="leaderboard-list-content")
+                leaderboard_list_content = item.find("h2",class_="f3 text-normal")
                 anchor_tag = leaderboard_list_content.find("a")
                 user_id = anchor_tag.get('href')
-                username_val = leaderboard_list_content.find("span",class_="full-name")
+                username_val = leaderboard_list_content.find("span",class_="text-gray text-bold")
                 if username_val != None:
                     user_name = username_val.text.strip(' \t\n\r')
                 user = '{} {}'.format(user_id,user_name)

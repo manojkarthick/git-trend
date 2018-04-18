@@ -1,7 +1,7 @@
-# git-trend v0.1.2.1
+# git-trend v0.2
 A command line utility for getting the trending(top 10) Repositories and Developers at GitHub.
 
-View it on PyPI at: https://pypi.python.org/pypi/git-trend/0.1.2.1 
+View it on PyPI at: https://pypi.python.org/pypi/git-trend/0.2
 
 **Repositories** - The tool will print details such as the  name, owner, stars and the language of the repository.
 
