@@ -160,6 +160,10 @@ def cli():
             print("ERROR: Use either repos or devs flag, not both.")
             exit()
 
+        if not args.repos and (not args.devs):
+            print("ERROR: Use either repos or devs flag.")
+            exit()
+
         if args.period:
                 if args.period == 'daily':
                     t_period = 1
