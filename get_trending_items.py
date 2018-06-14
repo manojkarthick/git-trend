@@ -121,7 +121,6 @@ def cli():
         if args.repos:
             for key,value in trending.items():
                 value_items = value.split(';')
-                print(value_items)
                 description = value_items[0]
                 stars = value_items[1]
                 if len(value_items) == 2:                    
