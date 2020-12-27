@@ -165,6 +165,12 @@ def get_developers(list_items):
 
 
 def print_repositories(trending, format_="default"):
+    """
+    Print trending repositories in the requested output format
+    :param trending: List of trending items
+    :param format_: output format to use
+    :return:
+    """
     if format_ == "default":
         for key, value in trending.items():
             repo_name = key
@@ -194,6 +200,12 @@ def print_repositories(trending, format_="default"):
 
 
 def print_developers(trending, format_="default"):
+    """
+    Print trending developers in the requested output format
+    :param trending: List of trending items
+    :param format_: output format to use
+    :return:
+    """
     if format_ == "default":
         for key, value in trending.items():
             user_name = key
