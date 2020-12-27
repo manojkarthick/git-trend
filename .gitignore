@@ -5,3 +5,8 @@ venv/
 dist/
 build/
 git_trend_venv/
+.idea/
+*.pyc
+test_pypi_env/
+real_pyp_env/
+
