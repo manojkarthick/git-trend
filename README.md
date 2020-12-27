@@ -1,4 +1,4 @@
-# git-trend
+# git-trend ![build](https://github.com/manojkarthick/git-trend/workflows/Publish%20Python%20%F0%9F%90%8D%20distributions%20%F0%9F%93%A6%20to%20PyPI%20and%20TestPyPI/badge.svg)
 A command line utility for getting the trending (top N) Repositories and Developers on GitHub.
 
 - **Repositories** - The tool will print details such as the  name, owner, stars and the language of the repository.
@@ -76,6 +76,6 @@ Currently, only the following languages are supported: Python, Ruby, C, C++, Jav
 
 ### TODO
 
-[ ] Support for Spoken language filter
-[ ] Support for all languages available from GitHub
+* [ ] Support for Spoken language filter
+* [ ] Support for all languages available from GitHub
 
