@@ -1,5 +1,5 @@
-# git-trend ![build](https://github.com/manojkarthick/git-trend/workflows/Publish%20Python%20%F0%9F%90%8D%20distributions%20%F0%9F%93%A6%20to%20PyPI%20and%20TestPyPI/badge.svg)
-A command line utility for getting the trending (top N) Repositories and Developers on GitHub.
+# git-trend ![build](https://github.com/manojkarthick/git-trend/workflows/build/badge.svg)
+A command line utility for getting trending repositories and developers on GitHub.
 
 - **Repositories** - The tool will print details such as the  name, owner, stars and the language of the repository.
 - **Developers** - The tool will print details of the trending developer such as their username, name, their trending repository.
@@ -20,23 +20,27 @@ $ pip install git-trend
 
 The utility can fetch trending data for the overall site. In case you are interested in a particular language. Use the language option.
 
-```shell
--h, --help                  Print the help text
---repos                     Get the details of the trending repositories
---devs                      Get the details of the trending developers
---period PERIOD             Period refers to the time period over which the results are available
-                            The options available are daily, weekly, monthy. Defaults to daily.
---language LANGUAGE         The utility supports getting trending details of repositories and 
-                            developers of a particular language. Optional, by default fetches  overall trending statistics
---languages                 Get the list of supported languages
+```
+  -h, --help            show this help message and exit
+  --repos               to view trending repositories
+  --devs                to view trending developers
+  --period {daily,monthly,weekly}
+                        time period of results
+  --language {python,ruby,c,c++,java,scala,kotlin,javascript,typescript,go,rust,lua,haskell}
+                        the language whose trends you want to fetch
+  --format {default,json,table}
+                        Output format
+  --languages           print list of languages supported
+
 ```
 
 ### Sample Output
 
-```shell
-$ git-trend --repos
+* Supported Output formats: default, table, json.
+* Supported Languages: Python, Ruby, C, C++, Java, Scala, Kotlin, Javascript, TypeScript, Go, Rust, Lua, Haskell
 
-Fetching data from https://github.com/trending?since=daily. Please wait....
+```
+$ git-trend --repos
 
 ➜ facebookresearch/deit [Python, ★ 561]:  Official DeiT repository
 ➜ iptv-org/iptv [JavaScript, ★ 23,067]:  Collection of 5000+ publicly available IPTV channels from all over the world
@@ -50,8 +54,6 @@ Fetching data from https://github.com/trending?since=daily. Please wait....
 
 
 $ git-trend --devs
-
-Fetching data from https://github.com/trending/developers?since=daily. Please wait....
 
 ➜ Jan De Dobbeleer (JanDeDobbeleer)
   oh-my-posh: A prompt theming engine for Powershell
@@ -69,13 +71,71 @@ Fetching data from https://github.com/trending/developers?since=daily. Please wa
   sdmaid-public: SD Maid is an Android app that helps you manage files and apps.
 ..... <output shortened>
 
+
+$ git-trend --repos --language rust --format table
+
++------+----------------------------+-----------------------------------------------+----------+--------+
+| Rank | Repository                 | URL                                           | Language | Stars  |
++------+----------------------------+-----------------------------------------------+----------+--------+
+| 1    | sfackler/rust-postgres     | https://github.com/sfackler/rust-postgres     | Rust     | 1,977  |
+| 2    | yewstack/yew               | https://github.com/yewstack/yew               | Rust     | 14,328 |
+| 3    | paritytech/substrate       | https://github.com/paritytech/substrate       | Rust     | 3,503  |
+| 4    | tauri-apps/tauri           | https://github.com/tauri-apps/tauri           | Rust     | 7,640  |
+| 5    | paritytech/polkadot        | https://github.com/paritytech/polkadot        | Rust     | 1,848  |
+| 6    | Geal/nom                   | https://github.com/Geal/nom                   | Rust     | 4,688  |
+|                                                                                                       |
+| ............................................< output shortened >....................................  |
+|                                                                                                       |
+| 25   | redox-os/orbtk             | https://github.com/redox-os/orbtk             | Rust     | 2,806  |
++------+----------------------------+-----------------------------------------------+----------+--------+
+
+
+$ git-trend --devs --language scala --format json --period weekly
+
+{
+    "Thibault Duplessis": {
+        "rank": 1,
+        "user_id": "ornicar",
+        "repository": "lila",
+        "description": "\u265e lichess.org: the forever free, adless and open source chess server \u265e",
+        "url": "https://github.com/ornicar"
+    },
+    "Frank S. Thomas": {
+        "rank": 2,
+        "user_id": "fthomas",
+        "repository": "refined",
+        "description": "Simple refinement types for Scala",
+        "url": "https://github.com/fthomas"
+    },
+    "P. Oscar Boykin": {
+        "rank": 3,
+        "user_id": "johnynek",
+        "repository": "bosatsu",
+        "description": "A python-ish pure and total functional programming language",
+        "url": "https://github.com/johnynek"
+    },
+    .
+    . 
+    . <output shortened>
+    .
+    .
+    "Fabio Labella": {
+        "rank": 11,
+        "user_id": "SystemFw",
+        "repository": "Scala-World-2019",
+        "description": "",
+        "url": "https://github.com/SystemFw"
+    }
+}
+
+
 ```
-
-Currently, only the following languages are supported: Python, Ruby, C, C++, Java, Scala, Kotlin, Javascript, TypeScript, Go, Rust, Lua, Haskell
-
 
 ### TODO
 
+* [x] JSON output format support
+* [x] Hyperlink support
+* [x] Table output support
 * [ ] Support for Spoken language filter
 * [ ] Support for all languages available from GitHub
 

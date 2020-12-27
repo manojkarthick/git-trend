@@ -1,8 +1,11 @@
+import json
 from argparse import ArgumentParser
 from collections import OrderedDict
 
+import pkg_resources
 import requests
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable
 from termcolor import colored
 
 
@@ -38,7 +41,7 @@ SUPPORTED_LANGUAGES = [
 ]
 
 
-def strip_and_get(val, fallback="<Unknown>"):
+def strip_and_get(val, fallback=""):
     """
     Return the enclosing text or provided fallback value
     :param val: item to get text and strip whitespace
@@ -88,8 +91,6 @@ def get_github_soup(urls, content_type, period):
     """
     url = urls[content_type][period]
 
-    print("Fetching data from {}. Please wait....\n".format(url))
-
     req = requests.get(url)
     page_content = req.text
     soup = BeautifulSoup(page_content, 'html.parser')
@@ -103,7 +104,7 @@ def get_repositories(list_items):
     :return: K-V of repository information
     """
     trending = OrderedDict()
-    for item in list_items:
+    for index, item in enumerate(list_items):
         repo_organization, repo_name = item.find("h1", class_="h3 lh-condensed").text.strip(' \t\n\r').split("/")
         repository = "{}/{}".format(repo_organization.strip(), repo_name.strip())
 
@@ -111,11 +112,20 @@ def get_repositories(list_items):
         language_info = item.find("span", itemprop="programmingLanguage")
         stars_info = item.find("a", class_="muted-link d-inline-block mr-3")
 
-        repo_desc = strip_and_get(repo_desc_info, "<No description provided>")
-        repo_language = strip_and_get(language_info, "<Unknown language>")
+        # <No description provided>
+        # <Unknown language>
+        repo_desc = strip_and_get(repo_desc_info)
+        repo_language = strip_and_get(language_info)
         repo_stars = strip_and_get(stars_info)
 
-        trending[repository] = "{};{};{}".format(repo_desc, repo_language, repo_stars)
+        # trending[repository] = "{};{};{}".format(repo_desc, repo_language, repo_stars)
+        trending[repository] = {
+            "rank": index + 1,
+            "description": repo_desc,
+            "language": repo_language,
+            "stars": repo_stars,
+            "url": "https://github.com/{}".format(repository.strip())
+        }
 
     return trending
 
@@ -127,7 +137,7 @@ def get_developers(list_items):
     :return: K-V of developer information
     """
     trending = OrderedDict()
-    for item in list_items:
+    for index, item in enumerate(list_items):
         container = item.find("div", class_="col-sm-8 d-md-flex")
 
         user_name = container.find("h1", class_="h3 lh-condensed").text.strip(' \t\n\r')
@@ -136,13 +146,80 @@ def get_developers(list_items):
         repo_name_info = item.find("h1", class_="h4 lh-condensed")
 
         user_id = strip_and_get(user_id_info, user_name)
-        repo_name = strip_and_get(repo_name_info, "<Unknown repository>")
-        repo_desc = strip_and_get(repo_desc_info, "<No description provided>")
+        # <Unknown repository>
+        # <No description provided>
+        repo_name = strip_and_get(repo_name_info)
+        repo_desc = strip_and_get(repo_desc_info)
 
-        user = '{};{}'.format(user_id, user_name)
-        trending[user] = '{};{}'.format(repo_name, repo_desc)
+        # user = '{};{}'.format(user_id, user_name)
+        # trending[user] = '{};{}'.format(repo_name, repo_desc)
+        trending[user_name] = {
+            "rank": index + 1,
+            "user_id": user_id,
+            "repository": repo_name,
+            "description": repo_desc,
+            "url": "https://github.com/{}".format(user_id)
+        }
 
     return trending
+
+
+def print_repositories(trending, format_="default"):
+    if format_ == "default":
+        for key, value in trending.items():
+            repo_name = key
+            description = value["description"] if value["description"] != "" else "<Unknown Description>"
+            language = value["language"] if value["language"] != "" else "<Unknown Language>"
+            stars = value["stars"]
+            print("➜ {} [{}, ★ {}]:  {}".format(colored(repo_name, Colors.GREEN),
+                                                colored(language, Colors.BLUE),
+                                                colored(stars, Colors.YELLOW),
+                                                colored(description, Colors.RED)))
+    elif format_ == "json":
+        print(json.dumps(trending, indent=4))
+    elif format_ == "table":
+        tbl = PrettyTable()
+        tbl.field_names = ["Rank", "Repository", "URL", "Language", "Stars"]
+        for key, value in trending.items():
+            repo_name = key
+            url = value["url"]
+            rank = value["rank"]
+            language = value["language"]
+            stars = value["stars"]
+            tbl.add_row([rank, repo_name, url, language, stars])
+        tbl.align = "l"
+        print(tbl)
+    else:
+        print("Unknown format")
+
+
+def print_developers(trending, format_="default"):
+    if format_ == "default":
+        for key, value in trending.items():
+            user_name = key
+            user_id = value["user_id"] if value["user_id"] != "" else "<Unknown>"
+            repository = value["repository"] if value["repository"] != "" else "<Unknown Repository>"
+            description = value["description"] if value["description"] != "" else "<Unknown Description>"
+            print("➜ {} ({})\n  {}: {}".format(colored(user_name, Colors.GREEN),
+                                               colored(user_id, Colors.GREEN),
+                                               colored(repository, Colors.BLUE),
+                                               colored(description, Colors.RED)))
+    elif format_ == "json":
+        print(json.dumps(trending, indent=4))
+    elif format_ == "table":
+        tbl = PrettyTable()
+        tbl.field_names = ["Rank", "User", "User ID", "URL", "Repository"]
+        for key, value in trending.items():
+            user_name = key
+            rank = value["rank"]
+            user_id = value["user_id"]
+            url = value["url"]
+            repository = value["repository"]
+            tbl.add_row([rank, user_name, user_id, url, repository])
+        tbl.align = "l"
+        print(tbl)
+    else:
+        print("Unknown format")
 
 
 def cli():
@@ -154,8 +231,15 @@ def cli():
                         help='time period of results')
     parser.add_argument('--language', type=str, default=None, help='the language whose trends you want to fetch',
                         choices=SUPPORTED_LANGUAGES)
-    parser.add_argument('--languages', action='store_true', help='print list of languages supported', )
+    parser.add_argument("--format", type=str, choices=["default", "json", "table"], default="default",
+                        help="Output format")
+    parser.add_argument('--languages', action='store_true', help='print list of languages supported')
+    parser.add_argument('--version', action='store_true', help="Package version")
     args = parser.parse_args()
+
+    if args.version:
+        print("git-trend v{}".format(pkg_resources.require("git-trend")[0].version))
+        exit(0)
 
     if args.languages:
         if args.repos or args.devs or args.language:
@@ -195,26 +279,12 @@ def cli():
 
         box_content = info_box[0]
 
-        if args.repos:
+        if content_type == Constants.REPOSITORIES:
             list_items = box_content.find_all('article', class_="Box-row")
             trending = get_repositories(list_items)
+            print_repositories(trending, args.format)
 
-            for key, value in trending.items():
-                repo_name = key
-                description, language, stars = value.split(";")
-                print("➜ {} [{}, ★ {}]:  {}".format(colored(repo_name, Colors.GREEN),
-                                                    colored(language, Colors.BLUE),
-                                                    colored(stars, Colors.YELLOW),
-                                                    colored(description, Colors.RED)))
-
-        if args.devs:
+        if content_type == Constants.DEVELOPERS:
             list_items = box_content.find_all('article', class_="Box-row d-flex")
             trending = get_developers(list_items)
-
-            for key, value in trending.items():
-                user_id, user_name = key.split(";")
-                repository_name, description = value.split(';')
-                print("➜ {} ({})\n  {}: {}".format(colored(user_name, Colors.GREEN),
-                                                   colored(user_id, Colors.GREEN),
-                                                   colored(repository_name, Colors.BLUE),
-                                                   colored(description, Colors.RED)))
+            print_developers(trending, args.format)
