@@ -1,4 +1,5 @@
 # git-trend ![build](https://github.com/manojkarthick/git-trend/workflows/build/badge.svg)
+
 A command line utility for getting trending repositories and developers on GitHub.
 
 - **Repositories** - The tool will print details such as the  name, owner, stars and the language of the repository.
@@ -18,26 +19,29 @@ $ pip install git-trend
 
 ### Options
 
-The utility can fetch trending data for the overall site. In case you are interested in a particular language. Use the language option.
+The utility can fetch trending data for the overall site. In case you are interested in a particular language, use the language flag.
 
 ```
-  -h, --help            show this help message and exit
-  --repos               to view trending repositories
-  --devs                to view trending developers
-  --period {daily,monthly,weekly}
-                        time period of results
+  -h, --help                        show this help message and exit
+  --repos                           to view trending repositories
+  --devs                            to view trending developers
+  --period {daily,monthly,weekly}   time period of results
+  
   --language {python,ruby,c,c++,java,scala,kotlin,javascript,typescript,go,rust,lua,haskell}
-                        the language whose trends you want to fetch
+                                    the language whose trends you want to fetch
+  
   --format {default,json,table}
-                        Output format
-  --languages           print list of languages supported
-
+                                    Output format
+  --languages                       print list of languages supported
+  --version                         Package version
 ```
 
 ### Sample Output
 
 * Supported Output formats: default, table, json.
 * Supported Languages: Python, Ruby, C, C++, Java, Scala, Kotlin, Javascript, TypeScript, Go, Rust, Lua, Haskell
+
+#### List of trending git repositories
 
 ```
 $ git-trend --repos
@@ -51,8 +55,11 @@ $ git-trend --repos
 ➜ netdata/netdata [C, ★ 50,756]:  Real-time performance monitoring, done right! https://www.netdata.cloud
 ➜ werner-duvaud/muzero-general [Python, ★ 717]:  MuZero
 ..... <output shortened>
+````
 
+#### List of trending developers
 
+```
 $ git-trend --devs
 
 ➜ Jan De Dobbeleer (JanDeDobbeleer)
@@ -70,8 +77,11 @@ $ git-trend --devs
 ➜ Matthias Urhahn (d4rken)
   sdmaid-public: SD Maid is an Android app that helps you manage files and apps.
 ..... <output shortened>
+```
 
+#### List of trending repositories using Rust in table format
 
+```
 $ git-trend --repos --language rust --format table
 
 +------+----------------------------+-----------------------------------------------+----------+--------+
@@ -88,8 +98,11 @@ $ git-trend --repos --language rust --format table
 |                                                                                                       |
 | 25   | redox-os/orbtk             | https://github.com/redox-os/orbtk             | Rust     | 2,806  |
 +------+----------------------------+-----------------------------------------------+----------+--------+
+```
 
+#### List of trending repositories using Scala this week in JSON format
 
+```
 $ git-trend --devs --language scala --format json --period weekly
 
 {
@@ -127,7 +140,6 @@ $ git-trend --devs --language scala --format json --period weekly
         "url": "https://github.com/SystemFw"
     }
 }
-
 
 ```
 
