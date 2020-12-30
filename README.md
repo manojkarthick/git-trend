@@ -150,4 +150,6 @@ $ git-trend --devs --language scala --format json --period weekly
 * [x] Table output support
 * [ ] Support for Spoken language filter
 * [ ] Support for all languages available from GitHub
+* [ ] Support for packages data files
+* [x] Subclasses
 
