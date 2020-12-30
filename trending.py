@@ -276,21 +276,21 @@ def cli():
             print('ERROR: languages option cannot be used alongside other options. Omit --languages.')
             exit(1)
         else:
-            print("Languages currently supported: ".format(str(utils.get_supported_languages())))
+            print("Languages currently supported: {}".format(str(utils.get_supported_languages())))
             exit(0)
     else:
         if args.repos and not args.devs:
             content_type = ContentTypes.REPOSITORIES
-
-        if args.devs and not args.repos:
+        elif args.devs and not args.repos:
             content_type = ContentTypes.DEVELOPERS
-
-        if args.repos and args.devs:
+        elif args.repos and args.devs:
             print("ERROR: Use either repos or devs flag, not both.")
             exit(1)
-
-        if not args.repos and (not args.devs):
+        elif not args.repos and (not args.devs):
             print("ERROR: Use either repos or devs flag.")
+            exit(1)
+        else:
+            print("ERROR: Ambiguous input, please select either repos or devs")
             exit(1)
 
         try:
