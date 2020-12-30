@@ -1,4 +1,4 @@
-# git-trend ![build](https://github.com/manojkarthick/git-trend/workflows/build/badge.svg)
+# git-trend [![PyPI version](https://badge.fury.io/py/git-trend.svg)](https://badge.fury.io/py/git-trend) ![build](https://github.com/manojkarthick/git-trend/workflows/build/badge.svg) 
 
 A command line utility for getting trending repositories and developers on GitHub.
 
@@ -15,7 +15,7 @@ Install this tool from PyPI (The Python Package Index) using pip
 ```shell
 $ pip install git-trend 
 ```
-**NOTE**: Support for Python 2 is no longer available. For best experience, please use a terminal with unicode support for best results.
+**NOTE**: Support for Python 2 is no longer available. For best experience, please use a terminal with unicode support.
 
 ### Options
 
@@ -150,4 +150,6 @@ $ git-trend --devs --language scala --format json --period weekly
 * [x] Table output support
 * [ ] Support for Spoken language filter
 * [ ] Support for all languages available from GitHub
+* [ ] Support for packages data files
+* [x] Subclasses
 
