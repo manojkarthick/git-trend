@@ -9,4 +9,4 @@ git_trend_venv/
 *.pyc
 test_pypi_env/
 real_pyp_env/
-
+samples
