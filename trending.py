@@ -2,6 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from collections import OrderedDict
+from urllib.parse import urlencode
 
 import requests
 from bs4 import BeautifulSoup
@@ -15,7 +16,7 @@ from enums import Colors, ContentTypes
 
 class Trends(ABC):
     @abstractmethod
-    def __init__(self, content_type, period, language=None):
+    def __init__(self, content_type, period, language=None, spoken_language=None):
         """
         Initialize the trends base class that contains information common to repos and developers
         :param content_type: Type of content to parse
@@ -26,6 +27,7 @@ class Trends(ABC):
         self.content_type = content_type
         self.period = period
         self.language = language
+        self.spoken_language = spoken_language
         self.content = None
 
     def get_url(self):
@@ -33,11 +35,25 @@ class Trends(ABC):
         Get URLs for repository/developer information with optional time period
         :return: URL for processing
         """
-        return "https://github.com/trending{t}{l}since={p}".format(
+        base_url = "https://github.com/trending{t}{l}".format(
             t="" if self.content_type == ContentTypes.REPOSITORIES else "/{}".format(ContentTypes.DEVELOPERS),
-            p=self.period,
-            l="?" if not self.language else "/{}?".format(self.language)
+            l="" if not self.language else "/{}".format(self.language)
         )
+
+        params = {}
+
+        if self.period:
+            params["since"] = self.period
+        if self.spoken_language:
+            params["spoken_language_code"] = self.spoken_language
+
+        if params:
+            return "{u}?{q}".format(
+                u=base_url,
+                q=urlencode(params)
+            )
+        else:
+            return base_url
 
     def get_github_soup(self):
         """
@@ -94,7 +110,7 @@ class Trends(ABC):
 
 
 class Repositories(Trends):
-    def __init__(self, period, language=None):
+    def __init__(self, period, language=None, spoken_language=None):
         """
         Get Trending repositories data
         :param period: Time period to use for extracting statistics
@@ -103,12 +119,25 @@ class Repositories(Trends):
         super().__init__(
             content_type=ContentTypes.REPOSITORIES,
             period=period,
-            language=language
+            language=language,
+            spoken_language=spoken_language
         )
         super().parse_content()
 
         items = self.content.find_all('article', class_="Box-row")
-        utils.check_if_list_valid(items, self.content_type)
+        status = utils.check_if_list_valid(items, self.content_type)
+
+        if not status:
+            try:
+                blankslate = self.content.find_all('div', class_="blankslate")
+                if len(blankslate) == 1:
+                    print("There were no trending repositories for your selection.")
+                    exit(1)
+            except Exception as e:
+                print("Could not get trending {} from the page.".format(self.content_type))
+                print("Encountered Error: {}".format(utils.get_traceback_string()))
+                print("ERROR: Raise an issue on https://github.com/manojkarthick/git-trend/issues")
+                sys.exit(1)
 
         self.items = items
         self.trending = OrderedDict()
@@ -259,11 +288,16 @@ def cli():
     parser.add_argument('--devs', action='store_true', help='to view trending developers')
     parser.add_argument('--period', type=str, choices=utils.get_supported_periods(), default='daily',
                         help='time period of results')
-    parser.add_argument('--language', type=str, default=None, help='the language whose trends you want to fetch',
-                        choices=utils.get_supported_languages())
+    parser.add_argument('--language', type=str, default=None,
+                        help='the language whose trends you want to fetch. Use --languages flag to see supported languages.',
+                        choices=utils.get_supported_languages(), metavar='<language_code>')
+    parser.add_argument('--spoken-language', type=str, default=None,
+                        help='spoken language you want to filter results on. Use --spoken-languages flag to see supported spoken languages.',
+                        choices=utils.get_supported_spoken_languages(), metavar='<spoken_language_code>')
     parser.add_argument("--format", type=str, choices=utils.get_supported_formats(), default="default",
                         help="Output format")
     parser.add_argument('--languages', action='store_true', help='print list of languages supported')
+    parser.add_argument('--spoken-languages', action='store_true', help='print list of spoken languages supported')
     parser.add_argument('--version', action='store_true', help="Package version")
     args = parser.parse_args()
 
@@ -276,8 +310,19 @@ def cli():
             print('ERROR: languages option cannot be used alongside other options. Omit --languages.')
             exit(1)
         else:
-            print("Languages currently supported: {}".format(str(utils.get_supported_languages())))
+            print("Languages currently supported: {}")
+            utils.print_supported_languages("programming")
             exit(0)
+
+    if args.spoken_languages:
+        if args.repos or args.devs or args.language or args.spoken_language:
+            print('ERROR: spoken-languages option cannot be used alongside other options. Omit --spoken-languages.')
+            exit(1)
+        else:
+            print("Languages currently supported: ")
+            utils.print_supported_languages("spoken")
+            exit(0)
+
     else:
         if args.repos and not args.devs:
             content_type = ContentTypes.REPOSITORIES
@@ -293,11 +338,16 @@ def cli():
             print("ERROR: Ambiguous input, please select either repos or devs")
             exit(1)
 
+        if content_type == ContentTypes.DEVELOPERS and args.spoken_language:
+            print("ERROR: --spoken-language option is only supported for repos")
+            exit(1)
+
         try:
             if content_type == ContentTypes.REPOSITORIES:
                 repositories = Repositories(
                     period=args.period,
-                    language=args.language
+                    language=args.language,
+                    spoken_language=args.spoken_language
                 )
 
                 repositories.parse()
