@@ -1,6 +1,9 @@
 from traceback import format_tb
 
+from prettytable import PrettyTable
+
 from enums import Periods, Formats
+from languages import get_languages_json, get_spoken_languages_json
 
 
 def get_supported_periods():
@@ -19,7 +22,7 @@ def get_supported_formats():
     return [e.value for e in Formats]
 
 
-def get_supported_languages():
+def get_supported_languages_v0():
     """
     Return the programming languages supported by the program
     :return:
@@ -39,6 +42,44 @@ def get_supported_languages():
         'lua',
         'haskell'
     ]
+
+
+def get_supported_languages():
+    language_info = get_languages_json()
+    languages = []
+    for info in language_info:
+        languages.append(info["urlParam"])
+    return languages
+
+
+def get_supported_spoken_languages():
+    language_info = get_spoken_languages_json()
+    languages = []
+    for info in language_info:
+        languages.append(info["urlParam"])
+    return languages
+
+
+def print_supported_languages(dtype="programming"):
+    tbl = PrettyTable()
+
+    language_info = None
+    if dtype == "programming":
+        tbl.field_names = ["Language Name", "Language Code"]
+        language_info = get_languages_json()
+    elif dtype == "spoken":
+        tbl.field_names = ["Spoken Language Name", "Spoken Language Code"]
+        language_info = get_spoken_languages_json()
+    else:
+        print("ERROR: Unknown data type provided. Exiting.")
+        exit(1)
+
+    for info in language_info:
+        language_code = info["urlParam"]
+        language_name = info["name"]
+        tbl.add_row([language_name, language_code])
+    tbl.align = "l"
+    print(tbl)
 
 
 def strip_and_get(val, fallback=""):
@@ -62,9 +103,9 @@ def check_if_list_valid(items, content_type):
     :return:
     """
     if len(items) < 1:
-        print("Could not get trending {} from the page.".format(content_type))
-        print("ERROR: Raise an issue on https://github.com/manojkarthick/git-trend/issues")
-        exit(1)
+        return False
+    else:
+        return True
 
 
 def get_traceback_string(e):

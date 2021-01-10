@@ -10,7 +10,7 @@ View it on PyPI at: https://pypi.org/project/git-trend/
 ### Installation
 
 This tool has been built with python3. You need to install Python3.x for this utility.
-Install this tool from PyPI (The Python Package Index) using pip
+Install this tool from PyPI (The Python Package Index) using pip:
 
 ```shell
 $ pip install git-trend 
@@ -22,24 +22,28 @@ $ pip install git-trend
 The utility can fetch trending data for the overall site. In case you are interested in a particular language, use the language flag.
 
 ```
-  -h, --help                        show this help message and exit
-  --repos                           to view trending repositories
-  --devs                            to view trending developers
-  --period {daily,monthly,weekly}   time period of results
-  
-  --language {python,ruby,c,c++,java,scala,kotlin,javascript,typescript,go,rust,lua,haskell}
-                                    the language whose trends you want to fetch
-  
-  --format {default,json,table}
-                                    Output format
-  --languages                       print list of languages supported
-  --version                         Package version
+optional arguments:
+  -h, --help            show this help message and exit
+  --repos               to view trending repositories
+  --devs                to view trending developers
+  --period {daily,weekly,monthly}
+                        time period of results
+  --language <language_code>
+                        the language whose trends you want to fetch. Use --languages flag to see supported languages.
+  --spoken-language <spoken_language_code>
+                        spoken language you want to filter results on. Use --spoken-languages flag to see supported spoken languages.
+  --format {default,table,json}
+                        Output format
+  --languages           print list of languages supported
+  --spoken-languages    print list of spoken languages supported
+  --version             Package version
 ```
 
-### Sample Output
-
 * Supported Output formats: default, table, json.
-* Supported Languages: Python, Ruby, C, C++, Java, Scala, Kotlin, Javascript, TypeScript, Go, Rust, Lua, Haskell
+* Supported Languages: Run `git-trend --languages` to see list of supported languages
+* Supported Spoken languages: Run `git-trend --spoken-languages` to see list of supported spoken languages
+
+### Sample Output
 
 #### List of trending git repositories
 
@@ -148,8 +152,7 @@ $ git-trend --devs --language scala --format json --period weekly
 * [x] JSON output format support
 * [x] Hyperlink support
 * [x] Table output support
-* [ ] Support for Spoken language filter
-* [ ] Support for all languages available from GitHub
-* [ ] Support for packages data files
+* [x] Support for Spoken language filter
+* [x] Support for all languages available from GitHub
 * [x] Subclasses
 
