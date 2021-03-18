@@ -151,9 +151,9 @@ class Repositories(Trends):
             repo_organization, repo_name = item.find("h1", class_="h3 lh-condensed").text.strip(' \t\n\r').split("/")
             repository = "{}/{}".format(repo_organization.strip(), repo_name.strip())
 
-            repo_desc_info = item.find("p", class_="col-9 text-gray my-1 pr-4")
+            repo_desc_info = item.find("p", class_="col-9 color-text-secondary my-1 pr-4")
             language_info = item.find("span", itemprop="programmingLanguage")
-            stars_info = item.find("a", class_="muted-link d-inline-block mr-3")
+            stars_info = item.find("a", class_="Link--muted d-inline-block mr-3")
 
             repo_desc = utils.strip_and_get(repo_desc_info)
             repo_language = utils.strip_and_get(language_info)
@@ -232,7 +232,7 @@ class Developers(Trends):
 
             user_name = container.find("h1", class_="h3 lh-condensed").text.strip(' \t\n\r')
             user_id_info = container.find("p", class_="f4 text-normal mb-1")
-            repo_desc_info = item.find("div", class_="f6 text-gray mt-1")
+            repo_desc_info = item.find("div", class_="f6 color-text-secondary mt-1")
             repo_name_info = item.find("h1", class_="h4 lh-condensed")
 
             user_id = utils.strip_and_get(user_id_info, user_name)
