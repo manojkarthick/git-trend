@@ -15,6 +15,12 @@ Install this tool from PyPI (The Python Package Index) using pip:
 ```shell
 $ pip install git-trend 
 ```
+
+If you are a [pipx](https://pypa.github.io/pipx/) user, you can install by running:
+
+```shell
+$ pipx install git-trend
+```
 **NOTE**: Support for Python 2 is no longer available. For best experience, please use a terminal with unicode support.
 
 ### Options
