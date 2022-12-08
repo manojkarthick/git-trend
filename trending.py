@@ -151,7 +151,7 @@ class Repositories(Trends):
             repo_organization, repo_name = item.find("h1", class_="h3 lh-condensed").text.strip(' \t\n\r').split("/")
             repository = "{}/{}".format(repo_organization.strip(), repo_name.strip())
 
-            repo_desc_info = item.find("p", class_="col-9 color-text-secondary my-1 pr-4")
+            repo_desc_info = item.find("p", class_="col-9 color-fg-muted my-1 pr-4")
             language_info = item.find("span", itemprop="programmingLanguage")
             stars_info = item.find("a", class_="Link--muted d-inline-block mr-3")
 
